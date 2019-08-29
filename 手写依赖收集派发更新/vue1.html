@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>依赖收集和派发更新</title>
+</head>
+<body>
+<div id="app">
+    {{name}}<br>
+    {{age}}
+</div>
+
+<script>
+    //观察者，
+    function observe(obj,vm) {
+        Object.keys(obj).forEach(key=>{
+            //监听data上的数据,vm势力能直接调用该参数，将data上的属性挂载到vm上
+            defineReactive(vm,key,obj[key]);
+        })
+    }
+    function defineReactive(obj,key,value) {
+        Object.defineProperty(obj,key,{
+            get:function () {
+                console.log(`获取${key}`)
+            },
+            set:function (newValue) {
+                if(value === newValue){
+                    return
+                }
+                value = newValue;
+                console.log(`设置${newValue}`)
+            }
+        })
+    }
+    //编译dom节点
+    function compile(node,vm) {
+        //console.dir(node)
+        //正则判断是否是{{XXX}}text
+        let reg = /\{\{(.*)\}\}/;
+        if(node.nodeType===3){
+            if(reg.test(node.nodeValue)){
+                //获取正则中匹配的第一个数据
+                var name = RegExp.$1;
+                name = name.trim();
+                node.textContent = vm.data[name];
+            }
+        }
+    }
+    //dom节点劫持
+    function nodeToFragment(node,vm) {
+        //文档树片段，不直接操作dom
+        let flag = document.createDocumentFragment();
+        let child
+        while(child = node.firstChild){
+            compile(child,vm);
+            flag.appendChild(child);
+        }
+        return flag;
+    }
+    function Vue(options) {
+        this.data = options.data;
+        let _id = document.querySelector(options.el);
+        //对data进行监听
+        observe(this.data,this);
+        let _dom = nodeToFragment(_id,this);
+        _id.appendChild(_dom)
+    }
+
+    const app = new Vue({
+        el: '#app',
+        data: {
+            name: '睡不醒',
+            age: 18
+        }
+    })
+</script>
+</body>
+</html>
