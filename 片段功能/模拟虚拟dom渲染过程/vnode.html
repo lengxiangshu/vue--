@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <ul id='list'>
+        <li class='item'>Item 1</li>
+        <li class='item'>Item 2</li>
+        <li class='item'>Item 3</li>
+    </ul> -->
+    <script>
+        //使用一个对象去模拟描述上面的ul
+        const vnode = {
+            tagName: 'ul',
+            props: {
+                id: 'list'
+            },
+            children: [
+                {
+                    tagName: 'li',
+                    props: {
+                        class: 'item'
+                    },
+                    children: ['Item 1']
+                },
+                {
+                    tagName: 'li',
+                    props: {
+                        class: 'item'
+                    },
+                    children: ['Item 2']
+                },
+                {
+                    tagName: 'li',
+                    props: {
+                        class: 'item'
+                    },
+                    children: ['Item 3']
+                },
+            ]
+        }
+        // element构造函数，用于渲染虚拟dom到页面上
+        function Element(tagName, props, children) {
+            this.tagName = tagName
+            this.props = props
+            this.children = children
+        }
+        // dom结构可以表示为
+        var ul = new Element('ul', { id: 'list' }, [
+            new Element('li', { class: 'item' }, ['Item 1']),
+            new Element('li', { class: 'item' }, ['Item 2']),
+            new Element('li', { class: 'item' }, ['Item 3'])
+        ])
+
+        // 将虚拟dom渲染到页面上的方法
+        Element.prototype.render=function(){
+            var el=document.createElement(this.tagName)
+            var props = this.props
+            for(var prop in props){
+                var nodeProp=props[prop]
+                el.setAttribute(prop, nodeProp)
+            }
+            var children=this.children||[]
+            children.forEach(child=>{
+                var chlidEl=(child instanceof Element)?child.render() : document.createTextNode(child)
+                // console.log(chlidEl)
+                el.appendChild(chlidEl)
+            })
+
+            return el
+        }
+
+        var domRoot = ul.render()
+        document.body.appendChild(domRoot)
+    </script>
+</body>
+
+</html>
