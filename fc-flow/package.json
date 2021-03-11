@@ -1,0 +1,19 @@
+{
+  "name": "fc-flow",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "flow": "flow"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^5.24.4",
+    "webpack-cli": "^4.5.0"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.146.0"
+  }
+}
